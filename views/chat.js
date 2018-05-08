@@ -1,7 +1,8 @@
 var client;
+var userName;
 
 function sendMessage() {
-  var name = document.getElementById('userName').value;
+  var name = userName;
   var message = document.getElementById('message').value;
   var topic = $("#chatTopic").text();
   topic = topic.trim();
@@ -11,7 +12,7 @@ function sendMessage() {
     var str = name + " : " + message + " [" + arriveTime + "]";
     client.publish("chat/" + topic, str);
     document.getElementById('message').value = "";
-  }else{
+  } else {
     alert("Please click setting button");
   }
 }
@@ -25,6 +26,7 @@ function userSetting() {
   if (temp == "") {
     alert("please type name");
   } else {
+    userName = temp;
     if (topic == "none") {
       $.ajax({
         type: "GET",
@@ -38,14 +40,20 @@ function userSetting() {
             $("#chatTopic").text(room);
             client = mqtt.connect(broker);
             client.subscribe("chat/" + room);
+            client.on('offline', function() {
+                client.end();
+                window.location.reload(true);
+                alert("Disconnect");
+            });
             client.on("message", function(topic, payload) {
               var area = $("#content");
               area.val(area.val() + "\n" + payload);
             });
+            client.on("Disconnected")
             alert("Enter the " + room);
           }
         },
-        error : function(error){
+        error: function(error) {
           alert("Don`t find Broker!");
         }
       });

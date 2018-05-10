@@ -39,6 +39,7 @@ function userSetting() {
             let broker = "ws://" + ip + ":" + port;
             $("#chatTopic").text(room);
             client = mqtt.connect(broker);
+            client.subscribe("broadcast");
             client.subscribe("chat/" + room);
             client.on('offline', function() {
                 client.end();

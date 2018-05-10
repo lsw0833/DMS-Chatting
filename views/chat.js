@@ -12,7 +12,7 @@ function sendMessage() {
     var str = name + " : " + message + " [" + arriveTime + "]";
     client.publish("chat/" + topic, str);
     document.getElementById('message').value = "";
-  } else {
+  }else{
     alert("Please click setting button");
   }
 }
@@ -42,18 +42,17 @@ function userSetting() {
             client.subscribe("chat/" + room);
             client.on('offline', function() {
                 client.end();
-                window.location.reload(true);
-                alert("Disconnect");
+		window.location.reload(true);
+		alert("Disconnect");
             });
             client.on("message", function(topic, payload) {
               var area = $("#content");
               area.val(area.val() + "\n" + payload);
             });
-            client.on("Disconnected")
             alert("Enter the " + room);
           }
         },
-        error: function(error) {
+        error : function(error){
           alert("Don`t find Broker!");
         }
       });
